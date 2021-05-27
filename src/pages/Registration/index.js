@@ -1,9 +1,10 @@
+import Signup from '../../components/Signup'
 import './styles.scss'
 
 const Registration = ({}) => {
   return (
     <div>
-      <h1>Registration</h1>
+      <Signup />
     </div>
   )
 }
