@@ -1,5 +1,7 @@
 import { Controller, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import { auth, signInWithGoogle } from '../../firebase/utils';
+import AuthWrapper from '../AuthWrapper';
 import Button from '../forms/Button';
 import FormInput from '../forms/FormInput';
 import './styles.scss';
@@ -22,32 +24,34 @@ const SignIn = ({}) => {
     } catch (err) {
       // console.log(err)
     }
-  }
+  } 
 
+  const configAuthWrapper = {
+    headline: "Login",
+  }
   
 
   return (
-    <div className="signin">
-      <div className="wrap">
-        <h2>LogIn</h2>
-        {errorList.length > 0 && (
-          <ul>
-            {errorList.map((err, i) => (
-              <li key={i}>
-                {err}
-              </li>
-            ))}
-          </ul>
-        )}
+    <AuthWrapper {...configAuthWrapper}>
+     
 
         <div className="formWrap">
+          {errorList.length > 0 && (
+            <ul>
+              {errorList.map((err, i) => (
+                <li key={i}>
+                  {err}
+                </li>
+              ))}
+            </ul>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             
             <Controller 
               control={control}
               name="email"
               render={({ field: { value, onChange }}) => (
-                <FormInput placeholder="Email" type="email" value={value} handleChange={onChange} />
+                <FormInput placeholder="Email" type="email" value={value || ''} handleChange={onChange} />
               )}
               rules={{ required: "Not valid email" }}
             />
@@ -56,7 +60,7 @@ const SignIn = ({}) => {
               control={control}
               name="password"
               render={({ field: { value, onChange }}) => (
-                <FormInput placeholder="Password" type="password" value={value} handleChange={onChange} />
+                <FormInput placeholder="Password" type="password" value={value || ''} handleChange={onChange} />
               )}
               rules={{ required: "Not valid password", maxLength:{ value: 10, message: "Password must not be longer than 10 characters"}}}
             />
@@ -68,11 +72,15 @@ const SignIn = ({}) => {
 
 
               </div>
+              
+              <div className="links">
+                <Link to="/recovery">Reset Password</Link> 
+              </div>
             </div>
         </div>
+     
 
-      </div>
-    </div>
+    </AuthWrapper>
   )
 }
 export default SignIn

@@ -2,6 +2,7 @@
 import { Controller, useForm } from 'react-hook-form'
 import { auth, handleUserProfile } from '../../firebase/utils'
 import useFirebaseAuth from '../../hooks/useFirebaseAuth'
+import AuthWrapper from '../AuthWrapper'
 import Button from '../forms/Button'
 import FormInput from '../forms/FormInput'
 
@@ -33,11 +34,15 @@ const Signup = ({}) => {
     }
   }
 
+  const configAuthWrapper = {
+    headline: "Registration"
+  }
   
   return (
-    <div className="signup">
-      <div className="wrap">
-        <h2>Signup</h2>
+    <AuthWrapper {...configAuthWrapper}>
+     
+        <div className="formWrap">
+
         {errorList.length > 0 && (
           <ul>
             {errorList.map((err, i) => (
@@ -47,15 +52,13 @@ const Signup = ({}) => {
             ))}
           </ul>
         )}
-        <div className="formWrap">
-
         
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" >
           <Controller 
             control={control}
             name="displayName"
             render={({ field: { value, onChange }}) => (
-              <FormInput placeholder="Full Name" value={value} handleChange={onChange}/>
+              <FormInput placeholder="Full Name" value={value} handleChange={onChange} />
             )}
             
             rules={{ required: "Not valid name", maxLength:{ value: 10, message: "Name must not be longer than 10 characters"} }}
@@ -65,7 +68,7 @@ const Signup = ({}) => {
             control={control}
             name="email"
             render={({ field: { value, onChange }}) => (
-              <FormInput placeholder="Email" value={value} handleChange={onChange}/>
+              <FormInput placeholder="Email" value={value || ''} handleChange={onChange} />
             )}
             rules={{ required: "Not valid email" }}
           />
@@ -74,7 +77,7 @@ const Signup = ({}) => {
             control={control}
             name="password"
             render={({ field: { value, onChange }}) => (
-              <FormInput placeholder="Password"  value={value} handleChange={onChange} type="password"/>
+              <FormInput placeholder="Password"  value={value || ''} handleChange={onChange} type="password" />
             )}
             rules={{ required: "Not valid password", maxLength:{ value: 10, message: "Password must not be longer than 10 characters"}}}
           />
@@ -83,7 +86,7 @@ const Signup = ({}) => {
             control={control}
             name="confirmPassword"
             render={({ field: { value, onChange }}) => (
-              <FormInput placeholder="Confirm Password" handleChange={onChange} value={value} type="password"/>
+              <FormInput placeholder="Confirm Password" handleChange={onChange} value={value} type="password" />
             )}
             rules={{ required: "Not valid password input" ,  validate: value => value === watch("password") || "The passwords do not match" }}
           />
@@ -96,8 +99,8 @@ const Signup = ({}) => {
         </div>
 
 
-      </div>
-    </div>
+    
+    </AuthWrapper>
   )
 }
 export default Signup

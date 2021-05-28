@@ -4,11 +4,14 @@ import { Link } from 'react-router-dom'
 import { useContext, useEffect } from 'react'
 import { UserContext } from '../../context/user'
 import { auth } from '../../firebase/utils'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../state/userSlice'
 
 
 
 const Header = ({}) => {
-  const { currentUser } = useContext(UserContext)
+  // const { currentUser } = useContext(UserContext)
+  const currentUser = useSelector(selectUser)
   useEffect(() => {
     
   }, [currentUser])
@@ -18,8 +21,9 @@ const Header = ({}) => {
         <div className="logo">
           <Link to="/">
 
-            <img src={Logo} alt="logo"/>
+            <img src={Logo} alt="logo"/> 
           </Link>
+          
         </div>
         <div className="callToActions">
           {currentUser && (
