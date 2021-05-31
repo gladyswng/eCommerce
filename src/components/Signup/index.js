@@ -1,7 +1,9 @@
 
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { auth, handleUserProfile } from '../../firebase/utils'
-import useFirebaseAuth from '../../hooks/useFirebaseAuth'
+import { useDispatch } from 'react-redux'
+import { signup } from '../../state/userSlice'
 import AuthWrapper from '../AuthWrapper'
 import Button from '../forms/Button'
 import FormInput from '../forms/FormInput'
@@ -11,27 +13,45 @@ import './styles.scss'
 
 const Signup = ({}) => {
   // const { currentUser } = useFirebaseAuth()
+  const dispatch = useDispatch()
+  const [ signupStatus, setSignupStatus ] = useState('idle')
 
-  const { control, handleSubmit, watch, reset, formState: { errors }} = useForm()
+  
+  // Form
+  const { control, handleSubmit, watch, reset, formState: { errors, isValid } } = useForm()
+  
   const errorList = Object.values(errors).map(err => err.message)
+  
+  // signup status
+  const canSignup = [isValid && signupStatus === 'idle']
 
   
   const onSubmit = async (data) => {
     const { displayName, email, password } = data
-    
-    try {
-      const { user } = await auth.createUserWithEmailAndPassword(email, password)
-      await handleUserProfile(user, { displayName })
+      if (canSignup) {
+        try {
+          setSignupStatus('pending')
+          const resultAction = dispatch(signup({ email, password, displayName }))
+
+          unwrapResult(resultAction)
+          
+          reset({   
+            displayName: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+          })
+
+        } catch (err) {
+          console.log(err)
+        } finally {
+          setSignupStatus('idle')
+        }
+      }
+      // const { user } = await auth.createUserWithEmailAndPassword(email, password)
+      // await handleUserProfile(user, { displayName })
       
-      reset({   
-        displayName: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
-      })
-    } catch (err) {
-      console.log(err)
-    }
+  
   }
 
   const configAuthWrapper = {

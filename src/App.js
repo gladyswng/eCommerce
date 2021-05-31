@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import AdminToolbar from './components/AdminToolbar';
 import { UserContext } from './context/user';
 
 import './default.scss'
 import { auth } from './firebase/utils';
+import useAdminAuth from './hooks/useAdminAuth';
 import useFirebaseAuth from './hooks/useFirebaseAuth';
 import HomepageLayout from './layouts/HomepageLayout';
 import MainLayout from './layouts/MainLayout';
+import Admin from './pages/Admin';
 import Homepage from './pages/Homepage'
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
@@ -16,15 +19,18 @@ import { fetchUser, selectUser } from './state/userSlice';
 
 function App() {
   const dispatch = useDispatch()
-  
+  // const currentUser = null
   const currentUser = useFirebaseAuth()
-  console.log(currentUser)
-
+  const adminUser = useAdminAuth()
+  console.log(adminUser)
+  
 
   
   return (
     <div className="App">
       {/* <UserContext.Provider value={{ currentUser }}> */}
+        {adminUser && <AdminToolbar />}
+    
         <Switch>
           <Route path="/" exact >
             <HomepageLayout >
@@ -59,6 +65,22 @@ function App() {
 
             </MainLayout>
           </Route>
+          
+          {/* <Route path="/admin" >
+            <MainLayout>
+              <Admin />
+
+            </MainLayout>
+          </Route> */}
+          <Route path="/admin" render={() => 
+            !adminUser?          
+            <Redirect to="/"/> 
+            : 
+            (<MainLayout>
+              <Admin />
+            </MainLayout>)
+          }>
+          </Route> 
           
 
         </Switch>

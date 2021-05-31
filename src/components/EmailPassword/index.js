@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { unwrapResult } from '@reduxjs/toolkit'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router'
 import { auth } from '../../firebase/utils'
+import { resetPassword } from '../../state/userSlice'
 import AuthWrapper from '../AuthWrapper'
 import Button from '../forms/Button'
 import FormInput from '../forms/FormInput'
@@ -10,32 +13,44 @@ import './styles.scss'
 
 const EmailPassword = ({}) => {
   const history = useHistory()
-  const [ error, setError ] = useState()
-   const { control, handleSubmit, reset, formState: { errors }} = useForm()
+  const dispatch = useDispatch()
+
+  const [ error, setError ] = useState([])
+  const [ resetStatus, setResetStatus ] = useState('idle')
+
+  const { control, handleSubmit, reset, formState: { errors } } = useForm()
   const errorList = Object.values(errors).map(err => err.message)
   
   const onSubmit = async (data) => {
     const { email } = data
-    const config = {
-      url: 'http://localhost:3000/login'
-    }
-    try {
-      await auth.sendPasswordResetEmail(email, config)
+ 
+    if (email && resetStatus === 'idle') {
+      try {
+        setResetStatus('pending')
+        const resultAction = await dispatch(resetPassword({ email }))
+        unwrapResult(resultAction)
 
-      history.push('/login')
+        reset({   
+          email: "",  
+        })
+
+        history.push('/login')
+      } catch (err) {
+        setError([...errorList, "User not found"])
+      } finally {
+        setResetStatus('idle')
+      }
       
-      reset({   
-        email: "",  
-      })
-
-      // if succedd, redirect
-
-    } catch (err) {
-      setError("User not found")
     }
+    
   } 
+  // useEffect(() => {
+  //   if (errorList.length >  0) {
+  //     setError([...errorList])
+  //   }
+  // },[errors])
+  
   console.log(error)
-
   const configAuthWrapper = {
     headline: 'Email Password',
   }
@@ -44,9 +59,9 @@ const EmailPassword = ({}) => {
       <div className="formWrap">
 
  
-        {errorList.length > 0 && (
+        {error?.length > 0 && (
           <ul>
-            {errorList.map((err, i) => (
+            {error.map((err, i) => (
               <li key={i}>
                 {err}
               </li>
@@ -54,7 +69,7 @@ const EmailPassword = ({}) => {
             
           </ul>
         )}
-        {error && <li>{error}</li> }
+  
         <form onSubmit={handleSubmit(onSubmit)}>
           
           <Controller 
