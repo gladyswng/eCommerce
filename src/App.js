@@ -1,35 +1,37 @@
+import './default.scss'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import AdminToolbar from './components/AdminToolbar';
-import { UserContext } from './context/user';
+import { checkUserIsAdmin } from './Utils';
 
-import './default.scss'
-import { auth } from './firebase/utils';
-import useAdminAuth from './hooks/useAdminAuth';
+import AdminToolbar from './components/AdminToolbar';
 import useFirebaseAuth from './hooks/useFirebaseAuth';
+import AdminLayout from './layouts/AdminLayout';
+import DashBoardLayout from './layouts/DashboardLayout';
 import HomepageLayout from './layouts/HomepageLayout';
 import MainLayout from './layouts/MainLayout';
 import Admin from './pages/Admin';
+import Dashboard from './pages/Dashboard';
 import Homepage from './pages/Homepage'
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
-import Registration from './pages/Registration'
+import Registration from './pages/Registration';
+import { fetchProducts, selectAllProducts } from './state/productSlice';
 import { fetchUser, selectUser } from './state/userSlice';
+import Search from './pages/Search';
 
 function App() {
   const dispatch = useDispatch()
   // const currentUser = null
   const currentUser = useFirebaseAuth()
-  const adminUser = useAdminAuth()
-  console.log(adminUser)
-  
+  // const adminUser = useAdminAuth()
+  // console.log(adminUser)
 
-  
+ 
   return (
     <div className="App">
       {/* <UserContext.Provider value={{ currentUser }}> */}
-        {adminUser && <AdminToolbar />}
+        {checkUserIsAdmin(currentUser) && <AdminToolbar />}
     
         <Switch>
           <Route path="/" exact >
@@ -37,7 +39,16 @@ function App() {
               <Homepage />
             </HomepageLayout>
           </Route>
-       
+          <Route path="/search/:filterType" >
+            <MainLayout>
+              <Search />
+            </MainLayout>
+          </Route>
+          <Route path="/search" >
+            <MainLayout>
+              <Search />
+            </MainLayout>
+          </Route>
           <Route path="/registration" render={() => 
             currentUser ?          
             <Redirect to="/"/> 
@@ -73,15 +84,24 @@ function App() {
             </MainLayout>
           </Route> */}
           <Route path="/admin" render={() => 
-            !adminUser?          
+            !checkUserIsAdmin(currentUser)?       
             <Redirect to="/"/> 
             : 
-            (<MainLayout>
-              <Admin />
-            </MainLayout>)
+            (
+              <AdminLayout>
+                <Admin />
+
+              </AdminLayout>
+            )
           }>
           </Route> 
-          
+          <Route path="/dashboard" render={() => (
+            <DashBoardLayout>
+              <Dashboard />
+            </DashBoardLayout>
+          )}
+
+          />
 
         </Switch>
 
@@ -92,4 +112,5 @@ function App() {
   );
 }
 
-export default App;
+
+export default App

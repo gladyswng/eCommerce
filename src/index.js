@@ -1,3 +1,4 @@
+import './wdyr'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -7,6 +8,9 @@ import App from './App';
 import { FirebaseContext } from './context/firebase';
 import { firebase } from './firebase/utils'
 import store from './state/store';
+
+
+App.whyDidYouRender = true
 ReactDOM.render(
   <React.StrictMode>
 

@@ -11,6 +11,10 @@ export const signup = createAsyncThunk('user/signup', async ({ email, password, 
   await handleUserProfile(user, { displayName, userRoles: ['user'] })
 })
 
+export const signOut = createAsyncThunk('user/signOut', async () => {
+  auth.signOut()
+})
+
 export const resetPassword = createAsyncThunk('user/resetPassword', async ({ email }) => {
   const config = {
     url: 'http://localhost:3000/login'

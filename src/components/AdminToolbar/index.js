@@ -4,7 +4,7 @@ import useFirebaseAuth from '../../hooks/useFirebaseAuth';
 import './styles.scss';
 
 const AdminToolbar = ({}) => {
-  const adminUser = useAdminAuth()
+  // const adminUser = useAdminAuth()
 
   return (
     <div className="adminToolbar">

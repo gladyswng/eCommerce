@@ -33,7 +33,7 @@ const useFirebaseAuth = () => {
           getUser(authUser)
         }
         dispatch(setCurrentUser(null))
-        history.push('/login')
+        // history.push('/login')
 
       }
     )

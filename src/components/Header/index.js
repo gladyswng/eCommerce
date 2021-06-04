@@ -25,6 +25,20 @@ const Header = ({}) => {
           </Link>
           
         </div>
+        <nav className="navigation">
+          <ul>
+            <li>
+              <Link to="/" className="headerLink" style={{ color: 'black' }}>
+                 Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/search" style={{ color: 'black' }}>
+                Search
+              </Link>
+            </li>
+          </ul>
+        
         <div className="callToActions">
           {currentUser && (
             <ul>
@@ -39,15 +53,16 @@ const Header = ({}) => {
           {!currentUser && (
             <ul>
               <li>
-                <Link to="/registration">Register</Link>
+                <Link to="/registration" style={{ color: 'black' }}>Register</Link>
               </li>
               <li>
-                <Link to="/login">Login</Link>
+                <Link to="/login" style={{ color: 'black' }}>Login</Link>
               </li>
             </ul>
 
           )}
         </div>
+        </nav>
       </div>
 
 
