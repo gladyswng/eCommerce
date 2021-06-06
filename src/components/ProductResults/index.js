@@ -5,31 +5,50 @@ import { fetchProducts, selectAllProducts } from '../../state/productSlice'
 import Product from './Product'
 import './styles.scss'
 import FormSelect from '../forms/FormSelect'
+import LoadMore from '../LoadMore'
 
 const ProductResults = () => {
   const dispatch = useDispatch()
   const history = useHistory()
-  console.log(useParams())
+  
   const { filterType } = useParams()
+
+
+  // state
   const products = useSelector(selectAllProducts)
-  const productsStatus = useSelector(({ product }) => product.products.status)
+  const {status:productsStatus, isLastPage, lastDocIndex} = useSelector(({ products }) => products)
+ 
+  
+  // const isLastPage = useSelector(({ produ }))
   
   useEffect(() => {
-    console.log(filterType)
-    if (productsStatus === 'idle') {
-      dispatch(fetchProducts({ filterType}))
-    }
+    // maybe set local status when need to fetch multiple times
+    // if (productsStatus === 'idle') {
+    //   console.log('dispatch param', filterType)
+    // }
+    dispatch(fetchProducts({ filterType }))
 
   }, [productsStatus, dispatch, filterType])
-  console.log(products)
 
-   const handleFilter = (e) => {
+
+  const handleFilter = (e) => {
 
     const nextFilter = e.target.value;
+    console.log('push', nextFilter)
     history.push(`/search/${nextFilter}`);
+  }
+
+  const handleLoadMore = () => {
+    dispatch(
+      fetchProducts({
+        filterType,
+        lastDocIndex,
+        persistProducts: products
+      })
+    )
   };
 
-  if (products.length < 1 ) {
+  if (products?.length < 1 ) {
     return (
       <div className="products">
         <p>
@@ -62,7 +81,7 @@ const ProductResults = () => {
       <h1>Browse Products</h1>
       <FormSelect {...configFilters} />
       <div className="productResults">
-        {products.map(product => {
+        {products?.map(product => {
           const {productName, productPrice, documentID } = product
           // if (!Object.values(product).every(Boolean)) return null
           if (![productName, productPrice, documentID].every(Boolean)) return null
@@ -72,6 +91,8 @@ const ProductResults = () => {
         })}
 
       </div>
+
+      {!isLastPage && <LoadMore onLoadMoreEvt={handleLoadMore}/>}
     </div>
 
   )

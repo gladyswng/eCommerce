@@ -11,6 +11,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import './styles.scss';
 import { addProduct, fetchProducts, removeProduct, selectAllProducts } from '../../state/productSlice';
 import Women from '../../assets/women.jpg'
+import LoadMore from '../../components/LoadMore';
 // const mapState = ({ productsData }) => ({
 //   products: productsData.products
 // });
@@ -25,21 +26,18 @@ const Admin = props => {
   const [productPrice, setProductPrice] = useState(0);
   const [productDesc, setProductDesc] = useState('');
 
-  // const { data, queryDoc, isLastPage } = products;
+    const {status:productsStatus, isLastPage, lastDocIndex} = useSelector(({ products }) => products)
 
-    const products =  useSelector(selectAllProducts) 
-  const productsStatus = useSelector(({ product }) => {
- 
-    return product.products.status})
+  const products =  useSelector(selectAllProducts) 
+
   console.log(products)
   
   useEffect(() => {
-    if (productsStatus === 'idle') {
-      dispatch(fetchProducts())
-  
-    }
+    // if (productsStatus === 'idle') {
+      dispatch(fetchProducts({}))
 
   }, [productsStatus, dispatch])
+
 
   const toggleModal = () => setHideModal(!hideModal);
 
@@ -73,13 +71,14 @@ const Admin = props => {
 
   };
 
+
   const handleLoadMore = () => {
-    // dispatch(
-    //   fetchProductsStart({
-    //     startAfterDoc: queryDoc,
-    //     persistProducts: data
-    //   })
-    // );
+    dispatch(
+      fetchProducts({
+        lastDocIndex,
+        persistProducts: products
+      })
+    )
   };
 
   const configLoadMore = {
@@ -230,9 +229,9 @@ const Admin = props => {
                   <tbody>
                     <tr>
                       <td>
-                        {/* {!isLastPage && (
+                        {!isLastPage && (
                           <LoadMore {...configLoadMore} />
-                        )} */}
+                        )}
                       </td>
                     </tr>
                   </tbody>
