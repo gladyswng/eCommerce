@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Women from '../../../assets/women.jpg'
 import Button from '../../forms/Button'
 
@@ -12,9 +13,11 @@ const Product = ({ productName, productPrice, documentID }) => {
       <div className="details">
         <ul>
           <li>
+            <Link to={`/product/${documentID}`}>
             <span className="name">
               {productName}
             </span>
+            </Link>
           </li>
           <li>
             <span className="price">

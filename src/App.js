@@ -19,6 +19,7 @@ import Registration from './pages/Registration';
 import { fetchProducts, selectAllProducts } from './state/productSlice';
 import { fetchUser, selectUser } from './state/userSlice';
 import Search from './pages/Search';
+import ProductDetails from './pages/ProductDetails';
 
 function App() {
   const dispatch = useDispatch()
@@ -47,6 +48,11 @@ function App() {
           <Route path="/search" >
             <MainLayout>
               <Search />
+            </MainLayout>
+          </Route>
+          <Route path="/product/:productID" >
+            <MainLayout>
+              <ProductDetails />
             </MainLayout>
           </Route>
           <Route path="/registration" render={() => 
