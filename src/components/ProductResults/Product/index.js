@@ -1,9 +1,25 @@
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Women from '../../../assets/women.jpg'
+import { addToCart } from '../../../state/cartSlice'
 import Button from '../../forms/Button'
 
-const Product = ({ productName, productPrice, documentID }) => {
-        if (!productName || !productPrice) return null
+const Product = (product) => {
+  const dispatch = useDispatch()
+  const { productName, productPrice, documentID } = product
+  if (!productName || !productPrice) return null
+
+
+  const handleAddToCart = (product) => {
+  
+    dispatch(
+      addToCart(product)
+    );
+    // history.push('/cart');
+  }
+
+
+
   return (
     <div className="product">
       <div  className="thumb">
@@ -25,7 +41,7 @@ const Product = ({ productName, productPrice, documentID }) => {
             </span>
           </li>
           <div className="addToCart">
-            <Button type="button">Add to cart</Button>
+            <Button type="button"  onClick={() => handleAddToCart(product)}>Add to cart</Button>
 
           </div>
         </ul>

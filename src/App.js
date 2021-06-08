@@ -20,6 +20,7 @@ import { fetchProducts, selectAllProducts } from './state/productSlice';
 import { fetchUser, selectUser } from './state/userSlice';
 import Search from './pages/Search';
 import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
 
 function App() {
   const dispatch = useDispatch()
@@ -53,6 +54,11 @@ function App() {
           <Route path="/product/:productID" >
             <MainLayout>
               <ProductDetails />
+            </MainLayout>
+          </Route>
+          <Route path="/cart" >
+            <MainLayout>
+              <Cart />
             </MainLayout>
           </Route>
           <Route path="/registration" render={() => 

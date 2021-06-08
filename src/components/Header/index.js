@@ -44,7 +44,7 @@ const Header = ({}) => {
         <div className="callToActions">
           <ul>
             <li>
-              <Link  style={{ color: 'black' }}>Your Cart ({totalItem})</Link>
+              <Link to="/cart" style={{ color: 'black' }}>Your Cart ({totalItem})</Link>
             </li>
 
 
