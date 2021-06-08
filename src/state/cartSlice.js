@@ -1,5 +1,9 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 
+
+
+
+
 const cartSlice = createSlice({
   name: 'cart', 
   initialState: {
@@ -26,7 +30,7 @@ const cartSlice = createSlice({
       state.cart.filter(item => item.documentID === action.payload)
       
     },
-    
+
     reduceCartItem(state, action) {
       const productIndex = state.cart.findIndex(item => item.documentID === action.payload)
       const product = state.cart[productIndex]
